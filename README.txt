@@ -91,6 +91,10 @@ http://centria.fct.unl.pt/~ludi/software.html
 
 
 
-
+************************************************************
 Ludwig Krippahl, 2011. 
-No copy rights reserved other than the right to copy.
+No copy rights reserved. My source code in this
+application is dedicated to the public domain.
+
+For licensing and copyrights on the Synapse library,
+check the source files in the synapse folder.
