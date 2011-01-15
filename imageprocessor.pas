@@ -23,20 +23,24 @@ uses
   Classes, SysUtils,Graphics,basetypes,eanthirteen,
   GraphType, IntfGraphics, LCLType, LCLProc,  LCLIntf,FPImage;
 
-function EAN13FromJpg(AJpgFile:string):string;
+function EAN13FromJpg(AJpgFile:string):TDecodedRec;
 
 implementation
 
-function EAN13FromJpg(AJpgFile:string):string;
+
+function EAN13FromJpg(AJpgFile:string):TDecodedRec;
 
 var
   jpg:TJpegImage;
   bmp:TBitMap;
-  x,y,y1,y2:Integer;
+  x,y:Integer;
+  dy:Single;
   tmp:TLazIntfImage; // needed because Lazarus has no scanlines on bmp
-  scanline:TIntegers;
+  scanline,bitline:TIntegers;
+  numlines:Integer;
 
 begin
+  Result.FileName:=AJpgFile;
   //setup images
   Jpg:=TJpegImage.Create;
   Jpg.LoadFromFile(AJpgFile);
@@ -49,31 +53,41 @@ begin
 
   SetLength(scanline,Bmp.Width);
 
-  //set scanline region
-  y:=3;//Bmp.Height div 20; //width of scanline
-  y1:=Bmp.Height div 2 - y;
-  y2:=Bmp.Height div 2 + y;
+  //scan lines in mid third
+  //TO DO: argument to control this?
 
-
-
-  for x:=0 to High(scanline) do
+  for y:=(Bmp.Height div 3) to (2*Bmp.Height div 3) do
     begin
-    scanline[x]:=0;
-    for y:=y1 to y2 do
-      begin
+
+    //read scanline
+    for x:=0 to High(scanline) do
       with Tmp.Colors[x,y] do
-        scanline[x]:=scanline[x]
-                    +red div 255
+        scanline[x]:=red div 255
                     +green div 255
                     +blue div 255;
+
+
+    //clip and store coordinates
+    bitline:=ClipLine(scanline,x);
+    if bitline<>nil then
+      begin
+      Result.y1:=y;
+      Result.y2:=y;
+      Result.x1:=x;
+      Result.x2:=x+Length(bitline);
+
+      //decode and check
+      bitline:=GetBits(bitline);
+      Result.Decoded:=DecodeLine(bitline);
+      Result.State:=EAN13State(Result.Decoded);
+      if Result.State=stateOK then Break;
       end;
-    //DebugLn(IntToStr(x)+'-'+IntToStr(scanline[x]));
     end;
+
+
   Tmp.Free;
   Jpg.Free;
   Bmp.Free;
-
-  Result:=DecodeLine(scanline);
 end;
 
 end.

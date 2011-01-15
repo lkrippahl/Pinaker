@@ -5,7 +5,7 @@
 Author: Ludwig Krippahl
 Date: 13.1.2011
 Purpose:
-  Not much, for now...
+  Base types and utility functions for handling arrays and strings
 Requirements:
 Revisions:
 To do:
@@ -20,10 +20,27 @@ interface
 uses
   Classes, SysUtils;
 
+const
+  //EAN record states
+  stateOK=0;
+  stateInvalid=1;
+  stateChecksumError=2;
+
+
 type
   TStrings=array of string;
   TCardinals=array of Cardinal;
   TIntegers=array of Integer;
+
+  TDecodedRec=record
+    Decoded:string;       //the decoded barcode
+    State:Integer;
+    FileName:string;      //image file name (with full path)
+    x1,y1,x2,y2:Integer;  //the coordinates of the scan line
+  end;
+
+  TDecodedRecs=array of TDecodedRec;
+
 
 function FixLineBreaks(s:string):string;    //converts to current OS
 function StrCompare(s1,s2:string):Boolean;  // string comparison indifferent to case
@@ -36,12 +53,14 @@ function GrabBetween(var Text:string;const Sep1,Sep2:string):string;
 function SplitString(Text:string;const Sep:string=' '):TStrings; overload;
 procedure SplitString(Text:string;Words:TStringList;const Sep:string=' ');overload;
 
-//Adds regardless of existing element
+//Add regardless of existing element
 procedure AddToArray(Elm:string;var Arr:TStrings);overload;
 procedure AddToArray(Elm:Cardinal;var Arr:TCardinals);overload;
 procedure AddToArray(Elm:Integer;var Arr:TIntegers);overload;
+procedure AddToArray(Elm:TDecodedRec;var Arr:TDecodedRecs);overload;
 
-//Adds only of not exist
+
+//Add only of not exist
 procedure AddUniqueToArray(Elm:string;var Arr:TStrings);overload;
 procedure AddUniqueToArray(Elm:Cardinal;var Arr:TCardinals);overload;
 procedure AddUniqueToArray(Elm:Integer;var Arr:TIntegers);overload;
@@ -123,11 +142,12 @@ begin
     end;
 end;
 
-
 procedure SplitString(Text:string;Words:TStringList;const Sep:string=' ');overload;
 begin
   while Text<>'' do Words.Add(GrabWord(Text,Sep));
 end;
+
+
 
 procedure AddToArray(Elm:string;var Arr:TStrings);overload;
 begin
@@ -142,6 +162,13 @@ begin
 end;
 
 procedure AddToArray(Elm:Integer;var Arr:TIntegers);overload;
+begin
+  SetLength(Arr,Length(Arr)+1);
+  Arr[High(Arr)]:=Elm;
+end;
+
+procedure AddToArray(Elm:TDecodedRec;var Arr:TDecodedRecs);overload;
+
 begin
   SetLength(Arr,Length(Arr)+1);
   Arr[High(Arr)]:=Elm;

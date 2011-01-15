@@ -53,8 +53,9 @@ const
 //2*winrad+1 (winrad pixels to the left and right)
 function ContrastPlot(Intensities:TIntegers;WinRad:Integer):TIntegers;
 
-//returns a clipped line from any line cutting the barcode
-function ClipLine(Intensities:TIntegers):TIntegers;
+//returns the clipped intensity array (a copy) and the index X, in the old
+//array, of the first element of the clipped array
+function ClipLine(const Intensities:TIntegers;var X:Integer):TIntegers;
 
 
 //returns the bits from a clipped line
@@ -66,10 +67,12 @@ function Decode(Value:Byte;Column:Integer):Char;
 
 function GetFirstDigit(Parity:string):Char;
 
-//returns barcode characters from any line cutting the barcode
-function DecodeLine(Intensities:TIntegers):string;
+//returns barcode characters from a bitline, a 0 and 1
+//array with the barcode
+function DecodeLine(BitLine:TIntegers):string;
 
-
+//evaluates string
+function EAN13State(Ean:string):Integer;
 
 
 implementation
@@ -114,7 +117,7 @@ begin
   Exit('?');
 end;
 
-function ClipLine(Intensities:TIntegers):TIntegers;
+function ClipLine(const Intensities:TIntegers;var X:Integer):TIntegers;
 //assumes barcode contains the center of the array
 
 var
@@ -122,6 +125,7 @@ var
   f,i1,i2,cc:Integer;
 
 begin
+  Result:=nil;
   contrast:=ContrastPlot(Intensities,20);
 
   //search for contrast drop from the center point
@@ -138,8 +142,9 @@ begin
   while (i1<High(Intensities)) and (intensities[i1]>cc) do Inc(i1);
   while (i2>0) and (intensities[i2]>cc) do Dec(i2);
 
-  Result:=Copy(Intensities,i1,i2-i1+1);
-  DebugLn(IntToStr(i1)+':'+IntToStr(i2));
+  if i2>i1+3*95 then //at least 3 pixels per bin
+    Result:=Copy(Intensities,i1,i2-i1+1);
+  X:=i1;
 end;
 
 function GetBits(Intensities:TIntegers):TIntegers;
@@ -147,18 +152,32 @@ function GetBits(Intensities:TIntegers):TIntegers;
 
 const BitCount=95;
 
-var f,ix,top,bot:Integer;
+var
+  f,ix,top,bot:Integer;
+  hitcount:TIntegers;
 
 begin
   SetLength(Result,BitCount);
-  for f:=0 to High(Result) do Result[f]:=0;
+  SetLength(hitcount,BitCount);
+  for f:=0 to High(Result) do
+    begin
+    Result[f]:=0;
+    hitcount[f]:=0;
+    end;
 
   //add all intensities into each corresponding bit
   for f:=0 to High(Intensities) do
     begin
     ix:=Trunc(f/Length(Intensities)*BitCount);
     Result[ix]:=Result[ix]+Intensities[f];
+    Inc(hitcount[ix]);
     end;
+
+  //average for number of bins
+  for f:=0 to High(Result) do
+    if hitcount[f]>0 then
+        Result[f]:=result[f] div hitcount[f];
+
   //get extremes
   top:=Result[0];
   bot:=Result[0];
@@ -207,10 +226,9 @@ begin
   Exit('?');
 end;
 
-function DecodeLine(Intensities:TIntegers):string;
+function DecodeLine(BitLine:TIntegers):string;
 
 var
-  bitline:TIntegers;
   parity:string;
   f:Integer;
 
@@ -219,19 +237,19 @@ function GuardsFail:Boolean;
 begin
   Result:=not (
     //left guards
-    (bitline[0]=1) and
-    (bitline[1]=0) and
-    (bitline[2]=1) and
+    (BitLine[0]=1) and
+    (BitLine[1]=0) and
+    (BitLine[2]=1) and
     //right guards
-    (bitline[94]=1) and
-    (bitline[93]=0) and
-    (bitline[92]=1) and
+    (BitLine[94]=1) and
+    (BitLine[93]=0) and
+    (BitLine[92]=1) and
     //center guards
-    (bitline[45]=0) and
-    (bitline[46]=1) and
-    (bitline[47]=0) and
-    (bitline[48]=1) and
-    (bitline[49]=0))
+    (BitLine[45]=0) and
+    (BitLine[46]=1) and
+    (BitLine[47]=0) and
+    (BitLine[48]=1) and
+    (BitLine[49]=0))
 end;
 
 procedure DecodeAt(Ix:Integer);
@@ -244,7 +262,7 @@ begin
   c:='?';
   if Ix<=6 then
     begin
-    b:=ArrayToByte(Copy(bitline,Ix*7-4,7));
+    b:=ArrayToByte(Copy(BitLine,Ix*7-4,7));
     c:=Decode(b,1);
     if c='?' then
       begin
@@ -256,14 +274,13 @@ begin
     end
   else
     begin
-    b:=ArrayToByte(Copy(bitline,Ix*7+1,7));
+    b:=ArrayToByte(Copy(BitLine,Ix*7+1,7));
     c:=Decode(b,3);
     end;
   Result:=Result+c;
 end;
 
 begin
-  bitline:=GetBits(ClipLine(Intensities));
   Result:='';
   parity:='';
   if GuardsFail then
@@ -274,6 +291,15 @@ begin
   Delete(parity,1,1); //ignore parity of second manufacturer digit;
   Result:=GetFirstDigit(parity)+Result;
   DebugLn(parity);
+end;
+
+function EAN13State(Ean: string): Integer;
+//TO DO:Checksum
+
+begin
+  if (Ean='') or (Pos('?',Ean)>0) or (Length(Ean)<>13) then
+    Result:=stateInvalid
+  else Result:=stateOK;
 end;
 
 end.

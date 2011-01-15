@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Menus, imageprocessor, httpsend, basetypes, pinakerconfig,
-  LCLProc, LazHelpHTML, UTF8Process, PopupNotifier;
+  LCLProc, LazHelpHTML, UTF8Process, PopupNotifier,eanthirteen;
 
 const
   //ISBN record states
@@ -31,17 +31,12 @@ const
   stateChecksumError=2;
 
 type
-  TIsbnRec=record
-    Isbn:string;
-    State:Integer;
-    FileName:string;
-  end;
-
-  TIsbnArray=array of TIsbnRec;
 
   { TPinakerForm }
 
   TPinakerForm = class(TForm)
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
     UpperCaseCb: TCheckBox;
     RetrieveBt: TButton;
     SkipFilesCb: TCheckBox;
@@ -68,12 +63,13 @@ type
     procedure ProcessBtClick(Sender: TObject);
   private
     { private declarations }
-    FIsbns:TIsbnArray;
+    FIsbns:TDecodedRecs;
 
     //for each listbox, keep the index for the FIsbns array
     FCorrectIxs,FIncorrectIxs:TIntegers;
-    function IsbnState(Isbn:string):Integer;
-    procedure AddIsbn(Isbn,FileName:string);
+
+    function CountFiles(Path:string):Integer;
+
   public
     {public declarations }
     procedure RefreshLists;
@@ -104,14 +100,8 @@ begin
   else ext:='*.jpg';
 
   //count the files and setup progress bar
-  filecount:=0;
   path:=AppendPathDelim(FolderEd.Text);
-
-  if FindFirst(path+ext,faAnyFile,sr)=0 then
-    repeat
-    Inc(filecount);
-    until FindNext(sr)<>0;
-  FindClose(sr);
+  filecount:=CountFiles(path+ext);
 
   //Exit if no files otherwise progressbar crashes...
   if filecount=0 then
@@ -126,8 +116,7 @@ begin
   //process the images
   if FindFirst(path+ext,faAnyFile,sr)=0 then
     repeat
-    s:=EAN13FromJpg(path+sr.Name);
-    AddIsbn(s,path+sr.Name);
+    AddToArray(EAN13FromJpg(path+sr.Name),FIsbns);
     ProgressBar.Position:=ProgressBar.Position+1;
     ProgressLbl.Caption:=sr.Name;
     Application.ProcessMessages;
@@ -137,21 +126,17 @@ begin
   RefreshLists;
 end;
 
-function TPinakerForm.IsbnState(Isbn: string): Integer;
-//TO DO:Checksum
+function TPinakerForm.CountFiles(Path: string): Integer;
+
+var sr:TSearchRec;
 
 begin
-  if (Isbn='') or (Pos('?',Isbn)>0) or (Length(Isbn)<>13) then
-    Result:=stateInvalid
-  else Result:=stateOK;
-end;
-
-procedure TPinakerForm.AddIsbn(Isbn, FileName: string);
-begin
-  SetLength(FIsbns, Length(FIsbns)+1);
-  FIsbns[High(FIsbns)].Isbn:=Isbn;
-  FIsbns[High(FIsbns)].FileName:=FileName;
-  FIsbns[High(FIsbns)].State:=IsbnState(Isbn);
+  Result:=0;
+  if FindFirst(Path,faAnyFile,sr)=0 then
+    repeat
+    Inc(Result);
+    until FindNext(sr)<>0;
+  FindClose(sr);
 end;
 
 procedure TPinakerForm.RefreshLists;
@@ -170,17 +155,17 @@ begin
       case FIsbns[f].State of
       stateOK:
         begin
-        CorrectLb.Items.Add(FIsbns[f].Isbn);
+        CorrectLb.Items.Add(FIsbns[f].Decoded);
         AddToArray(f,FCorrectIxs);
         end;
       stateInvalid:
         begin
-        IncorrectLb.Items.Add(FIsbns[f].Isbn+' (invalid string)');
+        IncorrectLb.Items.Add(FIsbns[f].Decoded+' (invalid string)');
         AddToArray(f,FIncorrectIxs);
         end;
       stateChecksumError:
         begin
-        IncorrectLb.Items.Add(FIsbns[f].Isbn+' (checksum error)');
+        IncorrectLb.Items.Add(FIsbns[f].Decoded+' (checksum error)');
         AddToArray(f,FIncorrectIxs);
         end;
       end;
@@ -213,13 +198,13 @@ begin
   try
     for f:=0 to High(FCorrectIxs) do
       begin
-      filename:=path+FIsbns[FCorrectIxs[f]].Isbn+'.xml';
+      filename:=path+FIsbns[FCorrectIxs[f]].Decoded+'.xml';
       if SkipFilesCb.Checked and FileExists(filename) then
         Inc(skip)
       else
         begin
         s:='http://isbndb.com/api/books.xml?access_key='+KeyEd.Text+
-          '&index1=isbn&value1='+FIsbns[FCorrectIxs[f]].Isbn;
+          '&index1=isbn&value1='+FIsbns[FCorrectIxs[f]].Decoded;
         DebugLn(s);
         HTTP.Headers.Clear;
         if HTTP.HTTPMethod('GET',s) then
@@ -289,45 +274,45 @@ begin
 end;
 
 begin
-  l:=TStringList.Create;
-  csv:=TStringList.Create;
-  csv.Add('Title'+#9+'Long Title'+#9+'Authors'+#9+'Publisher');
-  try
-  //count the files and setup progress bar
-  filecount:=0;
-  path:=AppendPathDelim(FolderEd.Text);
-  if FindFirst(path+'*.xml',faAnyFile,sr)=0 then
-    repeat
-    Inc(filecount);
-    until FindNext(sr)<>0;
-  FindClose(sr);
-  if filecount=0 then
+  SaveDialog1.InitialDir:=FolderEd.Text;
+  SaveDialog1.Filter:='Csv files|*.csv';
+  if SaveDialog1.Execute then
     begin
-    ProgressLbl.Caption:='No files found...';
-    Exit;
-    end;
-  ProgressBar.Max:=filecount;
-  ProgressBar.Position:=0;
+    l:=TStringList.Create;
+    csv:=TStringList.Create;
+    csv.Add('Title'+#9+'Long Title'+#9+'Authors'+#9+'Publisher');
+    try
+    //count the files and setup progress bar
+    path:=AppendPathDelim(FolderEd.Text);
+    filecount:=CountFiles(path+'*.xml');
 
+    if filecount=0 then
+      begin
+      ProgressLbl.Caption:='No files found...';
+      Exit;
+      end;
 
+    ProgressBar.Max:=filecount;
+    ProgressBar.Position:=0;
 
-  //process the xml files
-  if FindFirst(path+'*.xml',faAnyFile,sr)=0 then
-    repeat
-    l.LoadFromFile(path+sr.Name);
-    csv.Add(Flatten(l.Text));
-    ProgressBar.Position:=ProgressBar.Position+1;
-    ProgressLbl.Caption:=sr.Name;
-    Application.ProcessMessages;
-
-    until FindNext(sr)<>0;
-  FindClose(sr);
-  ProgressBar.Position:=0;
-  csv.SaveToFile(path+'pinakos.csv');
+    //process the xml files
+    if FindFirst(path+'*.xml',faAnyFile,sr)=0 then
+      repeat
+      l.LoadFromFile(path+sr.Name);
+      csv.Add(Flatten(l.Text));
+      ProgressBar.Position:=ProgressBar.Position+1;
+      ProgressLbl.Caption:=sr.Name;
+      Application.ProcessMessages;
+      until FindNext(sr)<>0;
+    FindClose(sr);
+    ProgressBar.Position:=0;
+    csv.SaveToFile(SaveDialog1.FileName);
+    ProgressLbl.Caption:='CSV file saved';
   finally
 
   l.Free;
   csv.Free;
+  end;
   end;
 end;
 
@@ -344,13 +329,13 @@ begin
     s:=FixISBNEd.Text;
     if (IncorrectLb.ItemIndex>=0) then        //only if one selected
       begin
-      if IsbnState(s)=stateOK then
+      if EAN13State(s)=stateOK then
         begin
         oldix:=IncorrectLb.ItemIndex;
 
         //update record
-        FIsbns[FIncorrectIxs[oldix]].Isbn:=s;
-        FIsbns[FIncorrectIxs[oldix]].State:=IsbnState(s);
+        FIsbns[FIncorrectIxs[oldix]].Decoded:=s;
+        FIsbns[FIncorrectIxs[oldix]].State:=Ean13State(s);
 
         RefreshLists;
 
@@ -393,6 +378,7 @@ procedure TPinakerForm.IncorrectLbClick(Sender: TObject);
 var
   jpg:TJpegImage;
   ix:Integer;
+  xs,ys:Single;
 
 begin
   if (Sender=IncorrectLb) and (IncorrectLb.ItemIndex>=0) then
@@ -403,7 +389,20 @@ begin
 
   jpg:=TJpegImage.Create;
   jpg.LoadFromFile(FIsbns[ix].FileName);
+
+  //scale
+  xs:=ImagePb.Width/jpg.Width;
+  ys:=ImagePb.Height/jpg.Height;
+
   ImagePb.Canvas.StretchDraw(Rect(0,0,ImagePb.Width-1,ImagePb.Height-1),jpg);
+  ImagePb.Canvas.Pen.Color:=clRed;
+  ImagePb.Canvas.MoveTo(Round(FIsbns[ix].x1*xs),Round(FIsbns[ix].y1*ys));
+  ImagePb.Canvas.LineTo(Round(FIsbns[ix].x2*xs),Round(FIsbns[ix].y2*ys));
+  DebugLn(IntToStr(Round(FIsbns[ix].x1*xs)));
+  DebugLn(IntToStr(Round(FIsbns[ix].x2*xs)));
+  DebugLn(IntToStr(Round(FIsbns[ix].y1*ys)));
+  DebugLn(IntToStr(Round(FIsbns[ix].y2*ys)));
+
   jpg.Free;
 
 end;

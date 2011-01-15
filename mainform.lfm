@@ -4,24 +4,24 @@ object PinakerForm: TPinakerForm
   Top = 37
   Width = 894
   ActiveControl = FolderEd
-  Caption = 'Pinaker V0.1'
+  Caption = 'Pinaker V0.15 beta'
   ClientHeight = 540
   ClientWidth = 894
   OnCreate = FormCreate
-  LCLVersion = '0.9.28.2'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 435
-    Width = 118
+    Width = 91
     Caption = 'ISBNdb access key'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 8
-    Width = 75
+    Width = 60
     Caption = 'Image flder:'
     ParentColor = False
   end
@@ -33,38 +33,38 @@ object PinakerForm: TPinakerForm
   end
   object ValidsLbl: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 216
-    Width = 121
+    Width = 93
     Caption = 'Valid ISBN numbers'
     ParentColor = False
   end
   object InvalidsLbl: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 56
-    Width = 131
+    Width = 103
     Caption = 'Invalid ISBN numbers'
     ParentColor = False
   end
   object Label5: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 188
-    Width = 71
+    Width = 57
     Caption = 'Enter ISBN:'
     ParentColor = False
   end
   object ProgressLbl: TLabel
     Left = 640
-    Height = 3
+    Height = 1
     Top = 8
-    Width = 3
+    Width = 1
     ParentColor = False
   end
   object FolderEd: TEdit
     Left = 16
-    Height = 23
+    Height = 21
     Top = 24
     Width = 424
     TabOrder = 0
@@ -73,14 +73,14 @@ object PinakerForm: TPinakerForm
     Left = 448
     Height = 25
     Top = 24
-    Width = 115
+    Width = 107
     Caption = 'Process Images'
     OnClick = ProcessBtClick
     TabOrder = 1
   end
   object KeyEd: TEdit
     Left = 112
-    Height = 23
+    Height = 21
     Top = 432
     Width = 80
     TabOrder = 2
@@ -102,7 +102,6 @@ object PinakerForm: TPinakerForm
     ItemHeight = 0
     OnClick = IncorrectLbClick
     TabOrder = 4
-    TopIndex = -1
   end
   object CorrectLb: TListBox
     Left = 16
@@ -112,11 +111,10 @@ object PinakerForm: TPinakerForm
     ItemHeight = 0
     OnClick = IncorrectLbClick
     TabOrder = 5
-    TopIndex = -1
   end
   object FixISBNEd: TEdit
     Left = 88
-    Height = 23
+    Height = 21
     Top = 184
     Width = 149
     OnKeyPress = FixISBNEdKeyPress
@@ -140,9 +138,9 @@ object PinakerForm: TPinakerForm
   end
   object SkipFilesCb: TCheckBox
     Left = 16
-    Height = 23
+    Height = 17
     Top = 496
-    Width = 159
+    Width = 123
     Caption = 'Skip existing XML files'
     Checked = True
     State = cbChecked
@@ -150,12 +148,20 @@ object PinakerForm: TPinakerForm
   end
   object UpperCaseCb: TCheckBox
     Left = 16
-    Height = 23
+    Height = 17
     Top = 517
-    Width = 130
+    Width = 103
     Caption = '.JPG (uppercase)'
     Checked = True
     State = cbChecked
     TabOrder = 10
+  end
+  object SaveDialog1: TSaveDialog
+    left = 832
+    top = 64
+  end
+  object OpenDialog1: TOpenDialog
+    left = 796
+    top = 64
   end
 end
