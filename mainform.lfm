@@ -22,7 +22,7 @@ object PinakerForm: TPinakerForm
     Height = 14
     Top = 8
     Width = 60
-    Caption = 'Image flder:'
+    Caption = 'Image folder:'
     ParentColor = False
   end
   object ImagePb: TPaintBox

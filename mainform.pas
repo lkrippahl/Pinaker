@@ -261,7 +261,7 @@ begin
   Delete(s,1,Pos('>',s));
   Result:=Result+#9+Copy(s,1,Pos('<',s)-1);
   //Publisher
-  Delete(s,1,Pos('<Publishe',s));
+  Delete(s,1,Pos('<Publisher',s));
   Delete(s,1,Pos('>',s));
   Result:=Result+#9+Copy(s,1,Pos('<',s)-1);
 
