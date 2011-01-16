@@ -21,7 +21,7 @@ object PinakerForm: TPinakerForm
     Left = 16
     Height = 14
     Top = 8
-    Width = 60
+    Width = 66
     Caption = 'Image folder:'
     ParentColor = False
   end

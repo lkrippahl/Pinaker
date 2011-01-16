@@ -240,37 +240,43 @@ var
   filecount:Integer;
   l,csv:TStringList;
 
-function Flatten(s:string):string;
+function FlattenISBNdb(s:string):string;
 //Flattens the xml fields into a csv string
-
+//Assumes this particular format for the ISBNdb xml files
+//TO DO: use REadXMLFile so that field order is not relevant
 
 var f:Integer;
 
 begin
   Result:='';
+  //Book id
+  Delete(s,1,Pos('book_id="',s));
+  Delete(s,1,Pos('"',s));
+  Result:=Result+'"'+Copy(s,1,Pos('"',s)-1)+'"';
+  //ISBN
+  Delete(s,1,Pos('isbn="',s));
+  Delete(s,1,Pos('"',s));
+  Result:=Result+',"'+Copy(s,1,Pos('"',s)-1)+'"';
+  //EAN-13
+  Delete(s,1,Pos('isbn13="',s));
+  Delete(s,1,Pos('"',s));
+  Result:=Result+',"'+Copy(s,1,Pos('"',s)-1)+'"';
   //title
   Delete(s,1,Pos('<Title',s));
   Delete(s,1,Pos('>',s));
-  Result:=Result+Copy(s,1,Pos('<',s)-1);
+  Result:=Result+',"'+Copy(s,1,Pos('<',s)-1)+'"';
   //titlelong
   Delete(s,1,Pos('<Title',s));
   Delete(s,1,Pos('>',s));
-  Result:=Result+#9+Copy(s,1,Pos('<',s)-1);
+  Result:=Result+',"'+Copy(s,1,Pos('<',s)-1)+'"';
   //Autors
   Delete(s,1,Pos('<Authors',s));
   Delete(s,1,Pos('>',s));
-  Result:=Result+#9+Copy(s,1,Pos('<',s)-1);
+  Result:=Result+',"'+Copy(s,1,Pos('<',s)-1)+'"';
   //Publisher
   Delete(s,1,Pos('<Publisher',s));
   Delete(s,1,Pos('>',s));
-  Result:=Result+#9+Copy(s,1,Pos('<',s)-1);
-
-  //quick fix for line breaks
-  s:=Result;
-  Result:='';
-  for f:=1 to Length(s) do
-    if s[f]=#10 then Result:=Result+'; '
-    else if s[f]<>#13 then Result:=Result+s[f];
+  Result:=Result+',"'+Copy(s,1,Pos('<',s)-1)+'"';
 end;
 
 begin
@@ -280,18 +286,17 @@ begin
     begin
     l:=TStringList.Create;
     csv:=TStringList.Create;
-    csv.Add('Title'+#9+'Long Title'+#9+'Authors'+#9+'Publisher');
+    csv.Add('ISBBdb ID,ISBN,EAN-13,Title,Long Title,Authors,Publisher');
     try
+
     //count the files and setup progress bar
     path:=AppendPathDelim(FolderEd.Text);
     filecount:=CountFiles(path+'*.xml');
-
     if filecount=0 then
       begin
       ProgressLbl.Caption:='No files found...';
       Exit;
       end;
-
     ProgressBar.Max:=filecount;
     ProgressBar.Position:=0;
 
@@ -299,7 +304,7 @@ begin
     if FindFirst(path+'*.xml',faAnyFile,sr)=0 then
       repeat
       l.LoadFromFile(path+sr.Name);
-      csv.Add(Flatten(l.Text));
+      csv.Add(FlattenISBNdb(l.Text));
       ProgressBar.Position:=ProgressBar.Position+1;
       ProgressLbl.Caption:=sr.Name;
       Application.ProcessMessages;
