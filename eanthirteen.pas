@@ -122,7 +122,7 @@ function ClipLine(const Intensities:TIntegers;var X:Integer):TIntegers;
 
 var
   contrast:TIntegers;
-  f,i1,i2,cc:Integer;
+  i1,i2,cc:Integer;
 
 begin
   Result:=nil;
