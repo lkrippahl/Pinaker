@@ -32,6 +32,9 @@ manpage.1: manpage.sgml
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
   <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+  <!ENTITY year        "2011">
+  <!ENTITY purpose     "utility to turn barcodes photos into book data">
+  <!ENTITY description "reads photos of barcodes and retrieves the book data from the Web">
 ]>
 
 <refentry>
@@ -44,7 +47,7 @@ manpage.1: manpage.sgml
       &dhsurname;
     </author>
     <copyright>
-      <year>2011</year>
+      <year>&year;</year>
       <holder>&dhusername;</holder>
     </copyright>
     &dhdate;
@@ -57,28 +60,40 @@ manpage.1: manpage.sgml
   <refnamediv>
     <refname>&dhpackage;</refname>
 
-    <refpurpose>Utility to turn barcodes photos into book data</refpurpose>
+    <refpurpose>&purpose;</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>&dhpackage;</command>
+
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
     <title>DESCRIPTION</title>
 
     <para>This manual page documents briefly the
-      <command>&dhpackage;</command> command.
+      <command>&dhpackage;</command>,</para>
 
-    <para><command>&dhpackage;</command> reads jpg files with photos of barcodes and retrieves the book data from the Web.</para>
+    <para><command>&dhpackage;</command> is a program that &description;.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <para>This application recieves no command line parameters.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>tellico (1).</para>
 
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
 
-    <para>This manual page was written by &dhusername; &dhemail; for
-      the &debian; system (and may be used by others). It is in the Public
-      Domain.
+    <para>This manual page was written by &dhusername; &dhemail;.
+      This manual is in the Public Domain.
     </para>
 
   </refsect1>
