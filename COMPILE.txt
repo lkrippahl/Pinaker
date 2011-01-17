@@ -1,9 +1,29 @@
-This software is known to successfully compile using Lazarus[1]. 
+This software is written in Pascal, with some non-standard extentions. 
+
+It is known to compile with Lazarus[1], and not to compile using GNU Pascal[2].
+
+= Lazarus =
+This software is known to successfully compile using Lazarus[1]. It was tested
+with version 0.9.28.2.
+
+== Using the GUI ==
+The easier way to do so it by using the Lazarus[1] Graphical User Inferface. 
 To do so, please open with it the pinaker.lpi file, and press F9. 
 
+== Using the command line ==
+If you want to compile it without using a GUI, you can do it this way:
+$ LAZARUS_VER=`ls /usr/lib/lazarus/|head -1`; fpc -MObjFPC -Scgi -O1 -gl -WG \
+-vewnhi -l -Fi/tmp/ -Fu./synapse/ \
+-Fu/usr/lib/lazarus/$LAZARUS_VER/lcl/units/i386-linux/ \
+-Fu/usr/lib/lazarus/$LAZARUS_VER/lcl/units/i386-linux/gtk2/ \
+-Fu/usr/lib/lazarus/$LAZARUS_VER/packager/units/i386-linux/ -Fu. -FU/tmp/ \
+-opinaker -dLCL -dLCLgtk2 pinaker.lpr
+
+= GNU Pascal =
 We are aware that, at least at this moment, it isn't compilable using GNU
 Pascal[2], since we use some things that don't belong to Pascal (ISO 7185) nor
 Extended Pascal (ISO 10206) standards. 
 
+= References =
 [1] http://www.lazarus.freepascal.org/
 [2] http://www.gnu-pascal.de/gpc/h-index.html
