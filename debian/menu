@@ -1,0 +1,2 @@
+?package(pinaker):needs="X11|text|vc|wm" section="Applications/Office"\
+  title="pinaker" command="/usr/bin/pinaker"
