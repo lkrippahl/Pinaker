@@ -1,3 +1,19 @@
+=============== Quick Info about "How To Compile" =============================
+To compile:
+* make
+To clean:
+* make clean
+To install:
+* make install
+
+What you probably want:
+make && make install
+
+Dependencies:
+If you have Lazarus on your system, you probably have everything to build this.
+
+============== More Info ======================================================
+
 This software is written in Pascal, with some non-standard extentions. 
 
 It is known to compile with Lazarus[1], and not to compile using GNU Pascal[2].
