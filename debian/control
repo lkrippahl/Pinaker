@@ -12,4 +12,4 @@ Package: pinaker
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Utility to turn barcodes' photos into book data
- This application reads jpg files with photos of barcodes and retrieves the book data from the Web
+ Application reads photos of barcodes and retrieves the book data from the Web
