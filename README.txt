@@ -32,6 +32,21 @@ http://centria.fct.unl.pt/~ludi/software.html
 
 ************************************************************
 
+Acknowledgments
+
+Lukas Gebauer: Ararat Synapse source code.
+
+Johann C. Rocholl: Ideas for barcode identification from 
+ his dissertation on "Robust 1D Barcode Recognition on 
+ Mobile Devices".
+
+Marcos Marado: Bug fixes, debian packages and compile 
+ information for Linux.
+
+Paula Simões: Data sources, requirements and testing.
+
+************************************************************
+
 Ludwig Krippahl, 2011. 
 Public domain. All my copy rights shared.
 
