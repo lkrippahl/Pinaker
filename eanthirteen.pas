@@ -11,7 +11,7 @@ Purpose:
 
 Requirements:
 Revisions:
-To do: checksum validation
+To do:
 *******************************************************************************}
 
 unit eanthirteen;
@@ -24,6 +24,9 @@ uses
   Classes, SysUtils,basetypes,LCLProc;
 
 const
+  //3 guard bits+42 number bits +5 guard bits +42 number bits+3 guard bits
+  BitCount=95;
+
   //for each digit, odd pariti left, even parity left, and right-hand
   EncodingTable:array [0..9] of array [1..3] of byte=
     ((%0001101,%0100111,%1110010),
@@ -56,6 +59,10 @@ function ContrastPlot(Intensities:TIntegers;WinRad:Integer):TIntegers;
 //returns the clipped intensity array (a copy) and the index X, in the old
 //array, of the first element of the clipped array
 function ClipLine(const Intensities:TIntegers;var X:Integer):TIntegers;
+
+function CompressLine(Intensities:TIntegers;Bins:Integer):TIntegers;
+function CheckDigit(Ean:string):Char;
+
 
 
 //returns the bits from a clipped line
@@ -147,13 +154,10 @@ begin
   X:=i1;
 end;
 
-function GetBits(Intensities:TIntegers):TIntegers;
-//3 guard bits+42 number bits +5 guard bits +42 number bits+3 guard bits
-
-const BitCount=95;
+function CompressLine(Intensities:TIntegers;Bins:Integer):TIntegers;
 
 var
-  f,ix,top,bot:Integer;
+  f,ix:Integer;
   hitcount:TIntegers;
 
 begin
@@ -177,6 +181,43 @@ begin
   for f:=0 to High(Result) do
     if hitcount[f]>0 then
         Result[f]:=result[f] div hitcount[f];
+end;
+
+function CheckDigit(Ean:string):Char;
+
+var
+  f,total,weight:Integer;
+
+begin
+  if Length(Ean)<12 then Exit('*'); //must have at least 12 digits
+  try
+  total:=0;
+  weight:=1;
+  for f:=1 to 12 do
+    begin
+    total:=total+StrToInt(Ean[f])*weight;
+    if weight=3 then weight:=1 else weight:=3;
+    end;
+  total:=10-total mod 10;
+  if total=10 then total:=0;
+  Result:=IntToStr(total)[1];
+  except
+    Result:='*'; //failed checksum due to unexpected error
+  end;
+end;
+
+
+function GetBits(Intensities:TIntegers):TIntegers;
+
+var
+  f,top,bot:Integer;
+  hitcount:TIntegers;
+
+begin
+  //Resize the intensities vector
+  if Length(Intensities)<>BitCount then
+      Result:=CompressLine(Intensities,BitCount)
+  else Result:=Intensities;
 
   //get extremes
   top:=Result[0];
@@ -189,12 +230,8 @@ begin
   //reduce to 0 and 1
   top:=(top+bot) div 2;
   for f:=0 to High(Result) do
-    begin
     if Result[f]>top then Result[f]:=0  //0 is white, 1 is black
     else Result[f]:=1;
-    DbgOut(IntToStr(Result[f]));
-    end;
-  DebugLn;
 end;
 
 function ArrayToByte(Bits:TIntegers):Byte;
@@ -290,15 +327,17 @@ begin
       DecodeAt(f);
   Delete(parity,1,1); //ignore parity of second manufacturer digit;
   Result:=GetFirstDigit(parity)+Result;
-  DebugLn(parity);
 end;
 
 function EAN13State(Ean: string): Integer;
-//TO DO:Checksum
 
 begin
   if (Ean='') or (Pos('?',Ean)>0) or (Length(Ean)<>13) then
     Result:=stateInvalid
+  else if CheckDigit(Ean)<>Ean[13] then
+    Result:=stateChecksumError
+  //currently ISBN-13 numbers start with 978 or 979
+  else if (Pos('97',Ean)<>1) then Result:=stateSuspect
   else Result:=stateOK;
 end;
 

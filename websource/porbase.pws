@@ -1,0 +1,9 @@
+post 'http://urn.porbase.org/isbn/dc/txt?id=' ean13 '&agente=urn.porbase.org'
+
+delto 'Title</a>: '
+grabf Title '</p>'
+delto 'Publisher</a>: '
+grabf Publisher '</p>'
+delto 'Contributor</a>: '
+grabf Authors '</p>'
+

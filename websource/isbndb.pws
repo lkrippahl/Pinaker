@@ -1,0 +1,28 @@
+name 'Uses isbndb.com'
+post 'http://isbndb.com/api/books.xml?access_key=' ISBNdb access key '&index1=isbn&value1=' ean13
+
+//Book id
+delto 'book_id="'
+grabf ISBNdb ID '"'
+
+//ISBN
+delto 'isbn="'
+grabf ISBN '"'
+
+//title
+delto '<Title>'
+grabf Title '</'
+
+//titlelong
+delto '<TitleLong'
+delto '>'
+grabf Long Title '<'
+
+delto '<Authors'
+delto '>'
+grabf Authors '<'
+
+//Publisher
+delto '<Publisher'
+delto '>'
+grabf Publisher '<'

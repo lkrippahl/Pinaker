@@ -25,18 +25,26 @@ const
   stateOK=0;
   stateInvalid=1;
   stateChecksumError=2;
+  stateSuspect=3;
 
 
 type
-  TStrings=array of string;
+  TPointPair=record
+    x1,y1,x2,y2:Integer;
+  end;
+
+  TSimpleStrings=array of string;
   TCardinals=array of Cardinal;
   TIntegers=array of Integer;
+  TBooleans=array of Boolean;
+  TPointPairs=array of TPointPair;
+
 
   TDecodedRec=record
     Decoded:string;       //the decoded barcode
     State:Integer;
     FileName:string;      //image file name (with full path)
-    x1,y1,x2,y2:Integer;  //the coordinates of the scan line
+    Lines:TPointPairs;    //the coordinates of each scan line
   end;
 
   TDecodedRecs=array of TDecodedRec;
@@ -50,30 +58,40 @@ function GrabWord(var Text:string;const Sep:string=' '):string;
 
 function GrabBetween(var Text:string;const Sep1,Sep2:string):string;
 
-function SplitString(Text:string;const Sep:string=' '):TStrings; overload;
+function SplitString(Text:string;const Sep:string=' '):TSimpleStrings; overload;
 procedure SplitString(Text:string;Words:TStringList;const Sep:string=' ');overload;
 
 //Add regardless of existing element
-procedure AddToArray(Elm:string;var Arr:TStrings);overload;
+procedure AddToArray(Elm:string;var Arr:TSimpleStrings);overload;
 procedure AddToArray(Elm:Cardinal;var Arr:TCardinals);overload;
 procedure AddToArray(Elm:Integer;var Arr:TIntegers);overload;
 procedure AddToArray(Elm:TDecodedRec;var Arr:TDecodedRecs);overload;
+procedure AddToArray(Elm:Boolean;var Arr:TBooleans);overload;
+procedure AddToArray(Elm:TPointPair;var Arr:TPointPairs);overload;
 
 
 //Add only of not exist
-procedure AddUniqueToArray(Elm:string;var Arr:TStrings);overload;
+procedure AddUniqueToArray(Elm:string;var Arr:TSimpleStrings);overload;
 procedure AddUniqueToArray(Elm:Cardinal;var Arr:TCardinals);overload;
 procedure AddUniqueToArray(Elm:Integer;var Arr:TIntegers);overload;
 
-procedure AppendToArray(const Suffix:TStrings; var Arr:TStrings);overload;
+//appends to the end of the array
+procedure AppendToArray(const Suffix:TSimpleStrings; var Arr:TSimpleStrings);overload;
 procedure AppendToArray(const Suffix:TCardinals; var Arr:TCardinals);overload;
 procedure AppendToArray(const Suffix:TIntegers; var Arr:TIntegers);overload;
 
-//Return index of first element in array matching Elm
-function IndexInArray(Elm:string; var Arr:TStrings):Integer;overload;
-function IndexInArray(Elm:Cardinal; var Arr:TCardinals):Integer;overload;
-function IndexInArray(Elm:Integer; var Arr:TIntegers):Integer;overload;
+//appends only those that do not exist already
+procedure AppendUniquesToArray(const Suffix:TSimpleStrings; var Arr:TSimpleStrings);overload;
+//TO DO: other types
 
+//Return index of first element in array matching Elm
+function IndexInArray(Elm:string; const Arr:TSimpleStrings):Integer;overload;
+function IndexInArray(Elm:Cardinal; const Arr:TCardinals):Integer;overload;
+function IndexInArray(Elm:Integer; const Arr:TIntegers):Integer;overload;
+
+//delete elements
+procedure DeleteFromArray(var Arr:TSimpleStrings; First,Count:Integer);overload;
+//TO DO: other types
 
 
 implementation
@@ -132,7 +150,7 @@ begin
     end;
 end;
 
-function SplitString(Text: string; const Sep: string): TStrings;overload;
+function SplitString(Text: string; const Sep: string): TSimpleStrings;overload;
 begin
   Result:=nil;
   while Text<>'' do
@@ -149,7 +167,7 @@ end;
 
 
 
-procedure AddToArray(Elm:string;var Arr:TStrings);overload;
+procedure AddToArray(Elm:string;var Arr:TSimpleStrings);overload;
 begin
   SetLength(Arr,Length(Arr)+1);
   Arr[High(Arr)]:=Elm;
@@ -174,7 +192,21 @@ begin
   Arr[High(Arr)]:=Elm;
 end;
 
-function IndexInArray(Elm:string; var Arr:TStrings):Integer;overload;
+procedure AddToArray(Elm:Boolean;var Arr:TBooleans);overload;
+
+begin
+  SetLength(Arr,Length(Arr)+1);
+  Arr[High(Arr)]:=Elm;
+end;
+
+procedure AddToArray(Elm:TPointPair;var Arr:TPointPairs);overload;
+
+begin
+  SetLength(Arr,Length(Arr)+1);
+  Arr[High(Arr)]:=Elm;
+end;
+
+function IndexInArray(Elm:string; const Arr:TSimpleStrings):Integer;overload;
 
 var f,h:Integer;
 
@@ -186,7 +218,7 @@ begin
   Exit(-1); //if not found
 end;
 
-function IndexInArray(Elm:Cardinal; var Arr:TCardinals):Integer;overload;
+function IndexInArray(Elm:Cardinal; const Arr:TCardinals):Integer;overload;
 
 var f,h:Integer;
 
@@ -197,7 +229,7 @@ begin
       Exit(f);
   Exit(-1); //if not found
 end;
-function IndexInArray(Elm:Integer; var Arr:TIntegers):Integer;overload;
+function IndexInArray(Elm:Integer; const Arr:TIntegers):Integer;overload;
 
 var f,h:Integer;
 
@@ -209,7 +241,7 @@ begin
   Exit(-1); //if not found
 end;
 
-procedure AddUniqueToArray(Elm:string;var Arr:TStrings);overload;
+procedure AddUniqueToArray(Elm:string;var Arr:TSimpleStrings);overload;
 
 begin
   if IndexInArray(Elm,Arr)<0 then
@@ -230,7 +262,7 @@ begin
       AddToArray(Elm,Arr);
 end;
 
-procedure AppendToArray(const Suffix:TStrings; var Arr:TStrings);overload;
+procedure AppendToArray(const Suffix:TSimpleStrings; var Arr:TSimpleStrings);overload;
 
 var
   f,len:Integer;
@@ -272,6 +304,46 @@ begin
       SetLength(Arr,len+Length(Suffix));
       for f:=0 to High(Suffix) do
         Arr[f+len]:=Suffix[f];
+    end;
+end;
+
+procedure AppendUniquesToArray(const Suffix:TSimpleStrings; var Arr:TSimpleStrings);overload;
+
+var
+  f,len:Integer;
+
+begin
+  if Suffix<>nil then
+    for f:=0 to High(Suffix) do
+      AddUniqueToArray(Suffix[f],Arr);
+end;
+
+procedure DeleteFromArray(var Arr:TSimpleStrings; First,Count:Integer);overload;
+
+var
+  f,c,last:Integer;
+  tmp:TSimpleStrings;
+
+begin
+  last:=First+Count;
+  if last>High(Arr) then last:=High(Arr);
+  if First<=last then
+    begin
+    SetLength(tmp,Length(Arr) - (last-First+1));
+    c:=0;
+    if First>0 then
+      for f:=0 to First-1 do
+        begin
+        tmp[c]:=Arr[f];
+        Inc(c);
+        end;
+    if last<High(Arr) then
+      for f:=last+1 to High(Arr) do
+        begin
+        tmp[c]:=Arr[f];
+        Inc(c);
+        end;
+    Arr:=tmp;
     end;
 end;
 
