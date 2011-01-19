@@ -15,8 +15,8 @@ object PinakerForm: TPinakerForm
     Height = 568
     Top = 0
     Width = 904
-    ActivePage = TabSheet1
-    TabIndex = 1
+    ActivePage = ProcessTs
+    TabIndex = 0
     TabOrder = 0
     object ProcessTs: TTabSheet
       Caption = 'Image Processing'

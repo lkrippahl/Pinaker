@@ -11,6 +11,7 @@ Revisions:
   18-1-2011: added the scripts page, save and load.
 To do:
   Find a better place for the htmlcodes.txt, instead of the config folder
+  Exception when image not found. Put "image not found" message
   Help.
 *******************************************************************************}
 unit MainForm;
@@ -796,7 +797,7 @@ begin
     while Length(s)<13 do s:=s+' '; //paint over deleted characters
     ix:=FIncorrectIxs[IncorrectLb.ItemIndex];
     th:=ImagePb.Font.GetTextHeight(s);
-    with FIsbns[FIncorrectIxs[ix]] do
+    with FIsbns[ix] do
       begin
       if Lines<>nil then
         ImagePb.Canvas.TextOut(Round(Lines[0].x1*FScaleX),
