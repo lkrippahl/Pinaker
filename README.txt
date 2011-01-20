@@ -7,8 +7,7 @@
 Version: 0.19 alfa
 
 This application reads jpg files with photos of barcodes and
-retrieves the book data from the Web. Read pinaker.pdf for
-more details.
+retrieves the book data from the Web.
 
 ************************************************************
 Disclaimer: This software is provided as is, with no express
