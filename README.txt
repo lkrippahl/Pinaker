@@ -16,7 +16,7 @@ or implied warranties. For all intents and purposes, I just
 put a bunch of bytes in some server and I'm not responsible 
 if anything goes wrong. 
 
-If fact, I'll be surprised if this works at all.
+In fact, I'll be surprised if this works at all.
 ************************************************************
 
 Source code available at:
