@@ -24,25 +24,29 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="SynEdit"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="lnetbase"/>
+        <MinVersion Minor="6" Release="4" Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SynEdit"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="27">
       <Unit0>
         <Filename Value="pinaker.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pinaker"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="35" Y="20"/>
-        <UsageCount Value="118"/>
+        <CursorPos X="17" Y="11"/>
+        <UsageCount Value="122"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -51,12 +55,11 @@
         <ComponentName Value="PinakerForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainForm"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="786"/>
         <CursorPos X="19" Y="800"/>
-        <UsageCount Value="118"/>
+        <UsageCount Value="122"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -68,7 +71,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="79"/>
         <CursorPos X="20" Y="87"/>
-        <UsageCount Value="118"/>
+        <UsageCount Value="122"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -79,18 +82,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="28"/>
         <CursorPos X="18" Y="28"/>
-        <UsageCount Value="118"/>
+        <UsageCount Value="122"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="eanthirteen.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="eanthirteen"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="7" Y="14"/>
-        <UsageCount Value="118"/>
+        <UsageCount Value="122"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -118,11 +121,11 @@
         <Filename Value="pinakerconfig.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pinakerconfig"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="9"/>
         <WindowIndex Value="0"/>
         <TopLine Value="27"/>
         <CursorPos X="40" Y="45"/>
-        <UsageCount Value="113"/>
+        <UsageCount Value="117"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -157,11 +160,12 @@
         <Filename Value="scripts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="scripts"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="10"/>
-        <CursorPos X="84" Y="20"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="15"/>
+        <CursorPos X="83" Y="20"/>
+        <UsageCount Value="94"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -206,134 +210,186 @@
         <Filename Value="htmlfix.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="htmlfix"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="48"/>
+        <TopLine Value="10"/>
         <CursorPos X="48" Y="58"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="C:\lazarus\components\lnet\lib\lhttp.pp"/>
+        <UnitName Value="lhttp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="76"/>
+        <CursorPos X="57" Y="185"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="C:\lazarus\components\lnet-0.6.4\lnet\lazaruspackage\lnetbase.pas"/>
+        <UnitName Value="lnetbase"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="54" Y="11"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\lazarus\components\lnet-0.6.4\lnet\lib\lnet.pp"/>
+        <UnitName Value="lNet"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="106"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\lazarus\components\lnet-0.6.4\lnet\lib\lhttp.pp"/>
+        <UnitName Value="lhttp"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="94"/>
+        <CursorPos X="74" Y="128"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="simplehttp.pas"/>
+        <UnitName Value="simplehttp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="43" Y="1"/>
+        <UsageCount Value="20"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="C:\lazarus\fpc\2.4.3\source\packages\fcl-web\src\base\fphttp.pp"/>
+        <UnitName Value="fphttp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="108"/>
+        <CursorPos X="69" Y="151"/>
+        <UsageCount Value="10"/>
+      </Unit26>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="htmlfix.pas"/>
-        <Caret Line="38" Column="9" TopLine="26"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="912" Column="21" TopLine="900"/>
       </Position1>
       <Position2>
-        <Filename Value="htmlfix.pas"/>
-        <Caret Line="44" Column="5" TopLine="40"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="771" Column="11" TopLine="768"/>
       </Position2>
       <Position3>
-        <Filename Value="htmlfix.pas"/>
-        <Caret Line="48" Column="30" TopLine="36"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="907" Column="40" TopLine="904"/>
       </Position3>
       <Position4>
         <Filename Value="mainform.pas"/>
-        <Caret Line="11" Column="52" TopLine="1"/>
+        <Caret Line="929" Column="47" TopLine="826"/>
       </Position4>
       <Position5>
         <Filename Value="mainform.pas"/>
-        <Caret Line="26" Column="81" TopLine="21"/>
+        <Caret Line="941" Column="5" TopLine="903"/>
       </Position5>
       <Position6>
-        <Filename Value="htmlfix.pas"/>
-        <Caret Line="87" Column="56" TopLine="70"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="922" Column="36" TopLine="916"/>
       </Position6>
       <Position7>
         <Filename Value="mainform.pas"/>
-        <Caret Line="912" Column="21" TopLine="900"/>
+        <Caret Line="921" Column="36" TopLine="916"/>
       </Position7>
       <Position8>
         <Filename Value="mainform.pas"/>
-        <Caret Line="771" Column="11" TopLine="768"/>
+        <Caret Line="273" Column="36" TopLine="267"/>
       </Position8>
       <Position9>
         <Filename Value="mainform.pas"/>
-        <Caret Line="907" Column="40" TopLine="904"/>
+        <Caret Line="909" Column="54" TopLine="849"/>
       </Position9>
       <Position10>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="929" Column="47" TopLine="826"/>
+        <Filename Value="pinaker.lpr"/>
+        <Caret Line="14" Column="33" TopLine="1"/>
       </Position10>
       <Position11>
         <Filename Value="mainform.pas"/>
-        <Caret Line="941" Column="5" TopLine="903"/>
+        <Caret Line="916" Column="3" TopLine="904"/>
       </Position11>
       <Position12>
         <Filename Value="mainform.pas"/>
-        <Caret Line="922" Column="36" TopLine="916"/>
+        <Caret Line="915" Column="3" TopLine="903"/>
       </Position12>
       <Position13>
         <Filename Value="mainform.pas"/>
-        <Caret Line="921" Column="36" TopLine="916"/>
+        <Caret Line="382" Column="1" TopLine="373"/>
       </Position13>
       <Position14>
         <Filename Value="mainform.pas"/>
-        <Caret Line="273" Column="36" TopLine="267"/>
+        <Caret Line="383" Column="1" TopLine="374"/>
       </Position14>
       <Position15>
         <Filename Value="mainform.pas"/>
-        <Caret Line="909" Column="54" TopLine="849"/>
+        <Caret Line="95" Column="9" TopLine="84"/>
       </Position15>
       <Position16>
-        <Filename Value="pinaker.lpr"/>
-        <Caret Line="14" Column="33" TopLine="1"/>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="916" Column="32" TopLine="902"/>
       </Position16>
       <Position17>
         <Filename Value="mainform.pas"/>
-        <Caret Line="916" Column="3" TopLine="904"/>
+        <Caret Line="920" Column="3" TopLine="906"/>
       </Position17>
       <Position18>
         <Filename Value="mainform.pas"/>
-        <Caret Line="915" Column="3" TopLine="903"/>
+        <Caret Line="813" Column="13" TopLine="809"/>
       </Position18>
       <Position19>
         <Filename Value="mainform.pas"/>
-        <Caret Line="382" Column="1" TopLine="373"/>
+        <Caret Line="914" Column="32" TopLine="902"/>
       </Position19>
       <Position20>
         <Filename Value="mainform.pas"/>
-        <Caret Line="383" Column="1" TopLine="374"/>
+        <Caret Line="915" Column="62" TopLine="903"/>
       </Position20>
       <Position21>
         <Filename Value="mainform.pas"/>
-        <Caret Line="95" Column="9" TopLine="84"/>
+        <Caret Line="917" Column="39" TopLine="905"/>
       </Position21>
       <Position22>
         <Filename Value="mainform.pas"/>
-        <Caret Line="916" Column="32" TopLine="902"/>
+        <Caret Line="911" Column="40" TopLine="905"/>
       </Position22>
       <Position23>
         <Filename Value="mainform.pas"/>
-        <Caret Line="920" Column="3" TopLine="906"/>
+        <Caret Line="910" Column="40" TopLine="904"/>
       </Position23>
       <Position24>
         <Filename Value="mainform.pas"/>
-        <Caret Line="813" Column="13" TopLine="809"/>
+        <Caret Line="15" Column="45" TopLine="1"/>
       </Position24>
       <Position25>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="914" Column="32" TopLine="902"/>
+        <Filename Value="scripts.pas"/>
+        <Caret Line="20" Column="78" TopLine="11"/>
       </Position25>
       <Position26>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="915" Column="62" TopLine="903"/>
+        <Filename Value="pinaker.lpr"/>
+        <Caret Line="11" Column="23" TopLine="1"/>
       </Position26>
       <Position27>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="917" Column="39" TopLine="905"/>
+        <Filename Value="scripts.pas"/>
+        <Caret Line="20" Column="79" TopLine="8"/>
       </Position27>
       <Position28>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="911" Column="40" TopLine="905"/>
+        <Filename Value="C:\lazarus\components\lnet-0.6.4\lnet\lazaruspackage\lnetbase.pas"/>
+        <Caret Line="11" Column="54" TopLine="1"/>
       </Position28>
       <Position29>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="910" Column="40" TopLine="904"/>
+        <Filename Value="scripts.pas"/>
+        <Caret Line="25" Column="42" TopLine="1"/>
       </Position29>
       <Position30>
-        <Filename Value="mainform.pas"/>
-        <Caret Line="15" Column="45" TopLine="1"/>
+        <Filename Value="scripts.pas"/>
+        <Caret Line="20" Column="74" TopLine="14"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -345,14 +401,9 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="synapse"/>
+      <OtherUnitFiles Value="synapse;usr/lib/synapse/"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>
