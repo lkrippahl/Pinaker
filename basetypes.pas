@@ -310,7 +310,7 @@ end;
 procedure AppendUniquesToArray(const Suffix:TSimpleStrings; var Arr:TSimpleStrings);overload;
 
 var
-  f,len:Integer;
+  f:Integer;
 
 begin
   if Suffix<>nil then

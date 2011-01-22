@@ -4,7 +4,7 @@ object PinakerForm: TPinakerForm
   Top = 114
   Width = 904
   ActiveControl = PageControl1
-  Caption = 'Pinaker v0.19a'
+  Caption = 'Pinaker v0.19b'
   ClientHeight = 567
   ClientWidth = 904
   OnClose = FormClose
@@ -15,8 +15,8 @@ object PinakerForm: TPinakerForm
     Height = 568
     Top = 0
     Width = 904
-    ActivePage = ProcessTs
-    TabIndex = 0
+    ActivePage = TabSheet1
+    TabIndex = 1
     TabOrder = 0
     object ProcessTs: TTabSheet
       Caption = 'Image Processing'
@@ -195,16 +195,16 @@ object PinakerForm: TPinakerForm
       object GroupBox3: TGroupBox
         Left = 428
         Height = 529
-        Top = 11
+        Top = 10
         Width = 456
         Caption = 'Loaded data source scripts'
         ClientHeight = 511
         ClientWidth = 452
         TabOrder = 1
         object NewScriptBt: TButton
-          Left = 310
+          Left = 326
           Height = 25
-          Top = 64
+          Top = 25
           Width = 107
           Caption = 'New script'
           Enabled = False
@@ -214,7 +214,7 @@ object PinakerForm: TPinakerForm
         object NewScriptEd: TEdit
           Left = 310
           Height = 21
-          Top = 32
+          Top = 4
           Width = 136
           OnChange = NewScriptEdChange
           TabOrder = 1
@@ -238,11 +238,12 @@ object PinakerForm: TPinakerForm
           TabOrder = 3
         end
         object DiscardScriptBt: TButton
-          Left = 302
+          Left = 118
           Height = 25
           Top = 480
           Width = 139
           Caption = 'Discard changes'
+          OnClick = DiscardScriptBtClick
           TabOrder = 4
         end
         inline SourceSMm: TSynMemo
@@ -833,7 +834,7 @@ object PinakerForm: TPinakerForm
         object RetrieveBt: TButton
           Left = 310
           Height = 25
-          Top = 129
+          Top = 127
           Width = 136
           Caption = 'Run scripts'
           OnClick = RetrieveBtClick
@@ -878,6 +879,7 @@ object PinakerForm: TPinakerForm
           Checked = True
           State = cbChecked
           TabOrder = 2
+          Visible = False
         end
       end
       object ErrorsMm: TMemo

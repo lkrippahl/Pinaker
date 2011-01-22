@@ -161,8 +161,8 @@ var
   hitcount:TIntegers;
 
 begin
-  SetLength(Result,BitCount);
-  SetLength(hitcount,BitCount);
+  SetLength(Result,Bins);
+  SetLength(hitcount,Bins);
   for f:=0 to High(Result) do
     begin
     Result[f]:=0;
@@ -172,7 +172,7 @@ begin
   //add all intensities into each corresponding bit
   for f:=0 to High(Intensities) do
     begin
-    ix:=Trunc(f/Length(Intensities)*BitCount);
+    ix:=Trunc(f/Length(Intensities)*Bins);
     Result[ix]:=Result[ix]+Intensities[f];
     Inc(hitcount[ix]);
     end;
@@ -211,7 +211,6 @@ function GetBits(Intensities:TIntegers):TIntegers;
 
 var
   f,top,bot:Integer;
-  hitcount:TIntegers;
 
 begin
   //Resize the intensities vector

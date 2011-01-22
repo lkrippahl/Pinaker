@@ -34,10 +34,8 @@ var
   jpg:TJpegImage;
   bmp:TBitMap;
   x,cy,y,f:Integer;
-  dy:Single;
   tmp:TLazIntfImage; // needed because Lazarus has no scanlines on bmp
   scanline,bitline:TIntegers;
-  numlines:Integer;
   totalsline:TIntegers;
   pp:TPointPair;
 

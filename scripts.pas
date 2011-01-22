@@ -7,7 +7,7 @@ Requirements:
 Revisions:
 To do:
   RunScripts, priority system to determine how repeated fields are filled
-
+  error handling (skip, break, etc)
 *******************************************************************************}
 
 unit scripts;
@@ -74,6 +74,7 @@ type
       FParsedScripts:array of TParsedScript;
 
       //running environment
+      FVerbose:Boolean;                 //Set to true to report all steps;
       FParsingError:Boolean;            //Set to false by SetupScript, true on error
       FVarVals:TSimpleStrings;          //created by SetupScript, edited on grabv
       FFieldVals:TSimpleStrings;        //created by SetupScript, edited on grabf
@@ -121,6 +122,7 @@ type
 
 
     public
+      property Verbose:Boolean read FVerbose write FVerbose;
       constructor Create;
       procedure ReadFolder(Folder:string);
 
@@ -139,6 +141,7 @@ type
       function AllFields(ScriptIxs:TIntegers):TSimpleStrings;
       function AllParameters(ScriptIxs:TIntegers):TSimpleStrings;overload;
       function AllParameters:TSimpleStrings;overload;
+      procedure UpdateAndSave(Ix:Integer;APath:string;ASource:TStrings);
 
 
       //Names: the shortnames of the scripts to run
@@ -279,10 +282,10 @@ function TScriptManager.CommandPost(Ix: Integer; const Line: TScriptString;
 
 var
   HTTP: THTTPSend;
-  f:Integer;
   s:string;
   l:TStringList;
 begin
+  Result:=True;
   HTTP := THTTPSend.Create;
   HTTP.Headers.Clear;
   l:=TStringList.Create;
@@ -290,12 +293,14 @@ begin
   FText:='';
   //get the url string, replacing variables
   s:=BuildString(Ix,1,Line);
-
   try
   if HTTP.HTTPMethod('GET',s) then
     begin
-    l.loadfromstream(Http.Document);
+    l.loadfromstream(HTTP.Document);
     FText:=l.Text;
+    //report post
+    if FVerbose then
+      Errors.Add('Posted to '+s);
     end;
   finally
     HTTP.Free;
@@ -345,10 +350,13 @@ var
   fix:Integer;
 
 begin
+  Result:=True;                                  //TO DO: some error checking
   s:=GrabX(Ix,Line,Errors);
   //find the field
   fix:=IndexInArray(Line.Parts[1],FParsedScripts[Ix].Fields);
   FFieldVals[fix]:=s;
+  if FVerbose then
+    Errors.Add('Grabbed '+s+' to field '+FParsedScripts[Ix].Fields[fix]);
 end;
 
 function TScriptManager.CommandGrabV(Ix: Integer; const Line: TScriptString;
@@ -358,10 +366,14 @@ var
   fix:Integer;
 
 begin
+  Result:=True;                                  //TO DO: some error checking
   s:=GrabX(Ix,Line,Errors);
   //find the field
   fix:=IndexInArray(Line.Parts[1],FParsedScripts[Ix].Variables);
   FVarVals[fix]:=s;
+  if FVerbose then
+    Errors.Add('Grabbed '+s+' to variable '+FParsedScripts[Ix].Variables[fix]);
+
 end;
 
 function TScriptManager.CommandDelTo(Ix: Integer; const Line: TScriptString;
@@ -372,11 +384,22 @@ var
   dix:Integer;
 
 begin
+  Result:=True;                                  //TO DO: some error checking
   //part 0 is the command
   s:=BuildString(Ix,1,Line);
   dix:=Pos(s,FText);
   if dix>0 then
+    begin
     Delete(FText,1,dix+Length(s)-1);
+    if FVerbose then
+      Errors.Add('Deleted to '+s);
+    end
+  else
+    begin
+    Errors.Add('Warning: '+s+' not found on DelTo');
+    FParsingError:=True;
+    Result:=False;                                //is this redundant?
+    end;
 end;
 
 function TScriptManager.SetupScript(Ix:Integer;
@@ -489,17 +512,21 @@ end;
 function TScriptManager.RunAScript(Ix: Integer; const Errors:TStrings):Boolean;
 
 var
-  f,pix:Integer;
+  f:Integer;
 
 begin
+  Result:=True;
   with FParsedScripts[Ix] do
     for f:=0 to High(ScriptLines) do
       with ScriptLines[f] do
+        begin
         case KeyWord of
-          kwPost:CommandPost(ix,Args,Errors);
-          kwDelTo:CommandDelTo(ix,Args,Errors);
-          kwGrabF:CommandGrabF(ix,Args,Errors);
-          kwGrabV:CommandGrabV(ix,Args,Errors);
+          kwPost:Result:=CommandPost(ix,Args,Errors);
+          kwDelTo:Result:=CommandDelTo(ix,Args,Errors);
+          kwGrabF:Result:=CommandGrabF(ix,Args,Errors);
+          kwGrabV:Result:=CommandGrabV(ix,Args,Errors);
+        end;
+        if not Result then Break; //TO DO: this should not always break
         end;
 end;
 
@@ -507,6 +534,8 @@ constructor TScriptManager.Create;
 begin
   inherited;
   FParsedScripts:=nil;
+  //For debugging
+  FVerbose:=True;
 end;
 
 procedure TScriptManager.ReadFolder(Folder: string);
@@ -518,7 +547,7 @@ var
 
 begin
   ClearScripts;
-  path:=AppendPathDelim(ScriptFolder);
+  path:=AppendPathDelim(Folder);
   if FindFirst(path+'*.'+ScriptExt,faAnyFile,sr)=0 then
       repeat
       ps.Source:=TStringList.Create;
@@ -612,6 +641,19 @@ begin
   Result:=nil;
   for f:=0 to High(FParsedScripts) do
     AppendUniquesToArray(FParsedScripts[f].Params,Result);
+end;
+
+procedure TScriptManager.UpdateAndSave(Ix:Integer;APath:string;ASource:TStrings);
+
+begin
+  if Ix>=0 then
+    with FParsedScripts[Ix] do
+      begin
+      Source.Assign(ASource);
+      ScriptLines:=ParseCode(Source);
+      ListIdentifiers(FParsedScripts[Ix]);
+      Source.SaveToFile(AppendPathDelim(APath)+ShortName+'.'+ScriptExt);
+      end;
 end;
 
 function TScriptManager.RunScripts(Ixs:TIntegers; Params, Values: TSimpleStrings;

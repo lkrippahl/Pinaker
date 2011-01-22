@@ -1,4 +1,5 @@
-name 'Uses isbndb.com'
+name 'Basic data from ISBNdb.com'
+
 post 'http://isbndb.com/api/books.xml?access_key=' ISBNdb access key '&index1=isbn&value1=' ean13
 
 //Book id
