@@ -1,0 +1,10 @@
+name 'Book cover URLs from Google Books'
+
+post 'http://www.google.com/search?tbs=bks%3A1&tbo=1&q=' ean13 '&btnG=Search+Books'
+delto 'http://books.google.com/books?id='
+grabv tempurl '"'
+post 'http://books.google.com/books?id=' tempurl
+delto 'class="booktitle"><h1>'
+grabf Title '</h1>'
+delto '"bookcover"><img src="'
+grabf Cover URL '"'
