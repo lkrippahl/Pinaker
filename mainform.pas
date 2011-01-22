@@ -933,13 +933,13 @@ procedure InstallPWS;
 
 var
   sr:TSearchRec;
-  pathfrom,pathto:string
+  pathfrom,pathto:string;
 
 begin
   ForceDirectories(ConfigFolder);
   pathto:=AppendPathDelim(ScriptFolder);
-  pathfrom:=AppendPathDelim(LinuxResourceFolder);
-  if FindFirst(pathfrom+'*.'+ScriptExt)=0 then
+  pathfrom:=AppendPathDelim(ResourceFolder);
+  if FindFirst(pathfrom+'*.'+ScriptExt,faAnyFile,sr)=0 then
     repeat
     CopyFile(pathfrom+sr.name,pathto+sr.name);
     until FindNext(sr)<>0;

@@ -51,7 +51,7 @@ begin
   ConfigFolder:=GetAppConfigDir(False);
   //no need for a subfolder in linux
   ScriptFolder:=ConfigFolder;
-  ResourceFolder='/usr/share/pinaker';
+  ResourceFolder:='/usr/share/pinaker';
   {$endif}
 
 end;
