@@ -1,0 +1,13 @@
+=============== Quick Info about "How To Compile" =============================
+Dependencies:
+Lazarus (at least 0.9.28.2) + FPC (at least 2.2.4, included with Lazarus) [1]
+The Ararat Synapse source code [2]
+
+The Ararat Synapse source code is expected to be in a .\synapse subfolder of
+the pinaker source code folder.
+
+To compile: 
+Open the pinaker.lpi with Lazarus, press F9.
+
+[1] http://www.lazarus.freepascal.org/
+[2] http://ararat.cz/synapse/doku.php
