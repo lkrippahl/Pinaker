@@ -17,7 +17,7 @@ unit scripts;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, pinakerconfig, basetypes, LCLProc, htmlfix,httpsend;
+  Classes, SysUtils, FileUtil, pinakerconfig, basetypes, LCLProc, htmlfix, httpsend;
 
 const
   //Separator for listing script shortnames and longnames

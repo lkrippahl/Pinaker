@@ -9,48 +9,48 @@ object PinakerForm: TPinakerForm
   ClientWidth = 904
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '0.9.28.2'
   object PageControl1: TPageControl
     Left = 0
     Height = 568
     Top = 0
     Width = 904
-    ActivePage = TabSheet1
-    TabIndex = 1
+    ActivePage = ProcessTs
+    TabIndex = 0
     TabOrder = 0
     object ProcessTs: TTabSheet
       Caption = 'Image Processing'
-      ClientHeight = 542
-      ClientWidth = 896
+      ClientHeight = 539
+      ClientWidth = 900
       object ValidsLbl: TLabel
         Left = 16
-        Height = 14
+        Height = 16
         Top = 258
-        Width = 93
+        Width = 121
         Caption = 'Valid ISBN numbers'
         ParentColor = False
       end
       object InvalidsLbl: TLabel
         Left = 16
-        Height = 14
+        Height = 16
         Top = 90
-        Width = 103
+        Width = 131
         Caption = 'Invalid ISBN numbers'
         ParentColor = False
       end
       object Label5: TLabel
         Left = 16
-        Height = 14
+        Height = 16
         Top = 230
-        Width = 57
+        Width = 71
         Caption = 'Enter ISBN:'
         ParentColor = False
       end
       object ProgressLbl: TLabel
         Left = 640
-        Height = 1
+        Height = 3
         Top = 8
-        Width = 1
+        Width = 3
         ParentColor = False
       end
       object ImagePb: TPaintBox
@@ -61,9 +61,9 @@ object PinakerForm: TPinakerForm
       end
       object Label2: TLabel
         Left = 20
-        Height = 14
+        Height = 16
         Top = 10
-        Width = 71
+        Width = 90
         Caption = 'Working folder'
         ParentColor = False
       end
@@ -75,6 +75,7 @@ object PinakerForm: TPinakerForm
         ItemHeight = 0
         OnClick = IncorrectLbClick
         TabOrder = 0
+        TopIndex = -1
       end
       object CorrectLb: TListBox
         Left = 16
@@ -84,10 +85,11 @@ object PinakerForm: TPinakerForm
         ItemHeight = 0
         OnClick = IncorrectLbClick
         TabOrder = 1
+        TopIndex = -1
       end
       object FixISBNEd: TEdit
         Left = 88
-        Height = 21
+        Height = 23
         Top = 226
         Width = 149
         OnChange = FixISBNEdChange
@@ -112,7 +114,7 @@ object PinakerForm: TPinakerForm
       end
       object FolderEd: TEdit
         Left = 16
-        Height = 21
+        Height = 23
         Top = 26
         Width = 444
         TabOrder = 5
@@ -147,8 +149,8 @@ object PinakerForm: TPinakerForm
     end
     object TabSheet1: TTabSheet
       Caption = 'Scripts and Configuration'
-      ClientHeight = 542
-      ClientWidth = 896
+      ClientHeight = 539
+      ClientWidth = 900
       object Label1: TLabel
         Left = 12
         Height = 14
@@ -163,14 +165,14 @@ object PinakerForm: TPinakerForm
         Top = 98
         Width = 410
         Caption = 'Script parameters'
-        ClientHeight = 118
+        ClientHeight = 119
         ClientWidth = 406
         TabOrder = 0
         object Label3: TLabel
           Left = 7
-          Height = 14
+          Height = 16
           Top = 96
-          Width = 46
+          Width = 59
           Caption = 'Set value'
           ParentColor = False
         end
@@ -182,10 +184,11 @@ object PinakerForm: TPinakerForm
           ItemHeight = 0
           OnClick = ParamsLbClick
           TabOrder = 0
+          TopIndex = -1
         end
         object ScriptVarEd: TEdit
           Left = 103
-          Height = 21
+          Height = 23
           Top = 89
           Width = 295
           OnKeyPress = ScriptVarEdKeyPress
@@ -198,7 +201,7 @@ object PinakerForm: TPinakerForm
         Top = 10
         Width = 456
         Caption = 'Loaded data source scripts'
-        ClientHeight = 511
+        ClientHeight = 512
         ClientWidth = 452
         TabOrder = 1
         object NewScriptBt: TButton
@@ -213,7 +216,7 @@ object PinakerForm: TPinakerForm
         end
         object NewScriptEd: TEdit
           Left = 310
-          Height = 21
+          Height = 23
           Top = 4
           Width = 136
           OnChange = NewScriptEdChange
@@ -227,6 +230,7 @@ object PinakerForm: TPinakerForm
           ItemHeight = 0
           OnClick = ScriptsClbClick
           TabOrder = 2
+          TopIndex = -1
         end
         object SaveScriptBt: TButton
           Left = 6
@@ -259,8 +263,9 @@ object PinakerForm: TPinakerForm
           ParentColor = False
           ParentFont = False
           TabOrder = 5
-          BorderStyle = bsSingle
+          BookMarkOptions.OnChange = nil
           Gutter.Width = 0
+          Gutter.Parts = SourceSMm.SynLeftGutterPartList1
           Gutter.MouseActions = <          
             item
               Shift = []
@@ -847,14 +852,14 @@ object PinakerForm: TPinakerForm
         Top = 10
         Width = 408
         Caption = 'General options'
-        ClientHeight = 70
+        ClientHeight = 71
         ClientWidth = 404
         TabOrder = 2
         object UpperCaseCb: TCheckBox
           Left = 7
-          Height = 17
+          Height = 23
           Top = 4
-          Width = 190
+          Width = 243
           Caption = 'Look for uppercase .JPG  extension'
           Checked = True
           State = cbChecked
@@ -862,9 +867,9 @@ object PinakerForm: TPinakerForm
         end
         object AppendResultsCb: TCheckBox
           Left = 7
-          Height = 17
+          Height = 23
           Top = 25
-          Width = 273
+          Width = 355
           Caption = 'Load and append CSV results file if file already exists'
           Checked = True
           State = cbChecked
@@ -872,9 +877,9 @@ object PinakerForm: TPinakerForm
         end
         object SkipScriptsCb: TCheckBox
           Left = 6
-          Height = 17
+          Height = 23
           Top = 46
-          Width = 336
+          Width = 433
           Caption = 'TO DO: Do not run a script for an item if no relevant field is empty'
           Checked = True
           State = cbChecked

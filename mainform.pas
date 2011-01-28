@@ -802,7 +802,7 @@ begin
     s:=FixISBNEd.Text;
     while Length(s)<13 do s:=s+' '; //paint over deleted characters
     ix:=FIncorrectIxs[IncorrectLb.ItemIndex];
-    th:=ImagePb.Font.GetTextHeight(s);
+    th:=ImagePb.Canvas.Font.GetTextHeight(s);
     with FIsbns[ix] do
       begin
       if Lines<>nil then
