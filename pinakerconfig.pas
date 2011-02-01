@@ -29,6 +29,10 @@ var
   ConfigFile:string;
   ScriptFolder:string; // folder containing the web source scripts
 
+  // initial resources (scripts) on linux and htmlcodes
+  ResourceFolder:string;
+
+
 implementation
 
 procedure InitPaths;
@@ -39,13 +43,15 @@ begin
   {$ifdef win32}
   ConfigFile := ExtractFilePath(Application.EXEName) + 'pinaker.ini';
   ConfigFolder:=ExtractFilePath(Application.EXEName);
-  ScriptFolder:=ConfigFolder+'/websource';
+  ResourceFolder:=ConfigFolder;
+  ScriptFolder:=ConfigFolder+'websource';
   {$endif}
   {$ifdef Unix}
   ConfigFile := GetAppConfigFile(False);
   ConfigFolder:=GetAppConfigDir(False);
   //no need for a subfolder in linux
   ScriptFolder:=ConfigFolder;
+  ResourceFolder:='/usr/share/pinaker';
   {$endif}
 
 end;

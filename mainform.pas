@@ -22,8 +22,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ComCtrls, Menus, imageprocessor, httpsend, basetypes, pinakerconfig,
-  LCLProc, LazHelpHTML, UTF8Process, PopupNotifier, CheckLst, SynHighlighterAny,
+  ExtCtrls, ComCtrls, Menus, imageprocessor, basetypes, pinakerconfig,
+  LCLProc, CheckLst, SynHighlighterAny,
   SynEdit, SynHighlighterPython, SynMemo, eanthirteen, INIFiles, scripts,htmlfix;
 
 
@@ -74,6 +74,7 @@ type
     ValidsLbl: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure DiscardScriptBtClick(Sender: TObject);
     procedure FixISBNEdChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure LoadBtClick(Sender: TObject);
@@ -110,7 +111,6 @@ type
     //Results
     FFieldNames:TSimpleStrings;             //names of the fields, from all scripts
                                             //First field is always "EAN-13"
-    FEANList:TSimpleStrings;                //List of EAN-13 values to retrieve
     FFieldVals:array of TSimpleStrings;     //values for each EAN number
 
     FScriptMan:TScriptManager;
@@ -156,7 +156,7 @@ procedure TPinakerForm.ProcessBtClick(Sender: TObject);
 
 var
   sr:TSearchRec;
-  path,s,ext:string;
+  path,ext:string;
   filecount:Integer;
 
 begin
@@ -197,20 +197,16 @@ end;
 procedure TPinakerForm.SaveScriptBtClick(Sender: TObject);
 
 var
-  scriptfile:string;
   ix:Integer;
 
 begin
   ix:=ScriptsCLb.ItemIndex;
   if ix>=0 then
     begin
-    //get filename from list and save
-    //TO DO: this is messy; add update and sabe to FScriptManager, do this there
-    scriptfile:=ScriptsClb.Items.Strings[ix];
-    Delete(scriptfile,Pos(':',scriptfile),Length(scriptfile));
-    scriptfile:=AppendPathDelim(ScriptFolder)+scriptfile+'.'+ScriptExt;
-    SourceSMm.Lines.SaveToFile(scriptfile);
-    LoadScripts;
+    FScriptMan.UpdateAndSave(ix,ScriptFolder,SourcesMm.Lines);
+    RefreshScriptList;
+    ScriptsClb.ItemIndex:=ix;
+    ScriptsClbClick(Sender);
     end;
 end;
 
@@ -256,7 +252,6 @@ procedure TPinakerForm.LoadConfig;
 var
   ini:TINIFile;
   sl:TStringList;
-  s:string;
   f:Integer;
 
 begin
@@ -699,8 +694,6 @@ procedure TPinakerForm.RetrieveBtClick(Sender: TObject);
 
 var
   f:Integer;
-  s,path,filename:string;
-
 
 begin
   ErrorsMm.Lines.Clear;
@@ -760,6 +753,8 @@ begin
         Application.ProcessMessages;
         RunScriptsForISBN(FCorrectIxs[f]);
         ScriptPrB.Position:=SCriptPrb.Position+1;
+        //DEBUG
+        //Break;
         end;
     except
       ErrorsMm.Lines.Add('Aborted due to an exception.');
@@ -783,6 +778,17 @@ begin
     SaveSession(SaveDialog.FileName);
 end;
 
+procedure TPinakerForm.DiscardScriptBtClick(Sender: TObject);
+
+var
+  ix:Integer;
+
+begin
+  ix:=ScriptsCLb.ItemIndex;
+  if ix>=0 then
+    FScriptMan.ListSource(ix,SourceSMm.Lines);
+end;
+
 procedure TPinakerForm.FixISBNEdChange(Sender: TObject);
 
 var
@@ -796,7 +802,7 @@ begin
     s:=FixISBNEd.Text;
     while Length(s)<13 do s:=s+' '; //paint over deleted characters
     ix:=FIncorrectIxs[IncorrectLb.ItemIndex];
-    th:=ImagePb.Font.GetTextHeight(s);
+    th:=ImagePb.Canvas.Font.GetTextHeight(s);
     with FIsbns[ix] do
       begin
       if Lines<>nil then
@@ -865,7 +871,7 @@ procedure TPinakerForm.FixISBNEdKeyPress(Sender: TObject; var Key: char);
 
 var
   s:string;
-  x,oldix:Integer;
+  oldix:Integer;
 
 begin
   oldix:=IncorrectLb.ItemIndex;
@@ -911,29 +917,53 @@ procedure CreateSyn;
 var f:Integer;
 
 begin
-  FSyn:=TSynAnySyn.Create(Self);
+  FSyn:=TSynAnySyn.Create(Application);
   for f:=0 to High(KeyWords) do FSyn.KeyWords.Add(KeyWords[f]);
   FSyn.KeyAttri.ForeGround:=clBlue;
   FSyn.StringAttri.ForeGround:=clTeal;
   SourceSMm.Highlighter:=FSyn;
 end;
 
+{$ifdef Unix}
+procedure InstallPWS;
+//copies the scrpit files from a resource folder (usr/shared/pinaker)
+//to the config folder (tipically, .config/pinaker)
+//TO DO: something better in windows other than keeping the scripts in the
+//application folder
+
+var
+  sr:TSearchRec;
+  pathfrom,pathto:string;
+
 begin
-  //DEBUG:
-  //ErrorsMm.Lines.SaveToFile('htmlcodes.txt');
-  //ErrorsMm.Lines.Clear;
+  ForceDirectories(ConfigFolder);
+  pathto:=AppendPathDelim(ScriptFolder);
+  pathfrom:=AppendPathDelim(ResourceFolder);
+  if FindFirst(pathfrom+'*.'+ScriptExt,faAnyFile,sr)=0 then
+    repeat
+    CopyFile(pathfrom+sr.name,pathto+sr.name);
+    until FindNext(sr)<>0;
+  FindClose(sr);
+end;
+{$endif}
+
+begin
   CreateSyn;          // This must be done programmatically because of
                       // version issues (?) with the lazarus package.
                       // Newer versions of SynAnySyn have a FrameEdges property
-                      // on CommentAttri
+                      // on CommentAttri, which fails to load on older versions.
   LoadConfig;
   FScriptMan:=TScriptManager.Create;
-  LoadScripts;
-  //initialize the Html decoding table
-  LoadHtmlTable(AppendPathDelim(ConfigFolder)+'htmlcodes.txt');
+  {$ifdef Unix}
+  //Install scripts if the folder does not exist
+  if not DirectoryExists(ScriptFolder) then
+    InstallPWS;
+  {$endif}
 
-  //DEBUG:
-  //ExportTable(ErrorsMm.Lines);
+  LoadScripts;
+
+  //initialize the Html decoding table
+  LoadHtmlTable(AppendPathDelim(ResourceFolder)+'htmlcodes.txt');
 end;
 
 procedure TPinakerForm.IncorrectLbClick(Sender: TObject);
