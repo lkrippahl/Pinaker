@@ -1,5 +1,5 @@
-pinaker (0.15+git20110117-1) unstable; urgency=low
+pinaker (0.19b+git20110201-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
- -- Marcos Daniel Marado Torres <marado@isp.novis.pt>  Mon, 17 Jan 2011 12:17:41 +0000
+ -- Marcos Daniel Marado Torres <marado@isp.novis.pt>  Tue, 01 Feb 2011 15:00:01 +0000
