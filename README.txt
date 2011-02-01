@@ -7,7 +7,7 @@
 Version: 0.19 alfa
 
 This application reads jpg files with photos of barcodes and
-retrieves the book data from the Web.
+retrieves the book data from the Web. 
 
 ************************************************************
 Disclaimer: This software is provided as is, with no express
@@ -46,7 +46,10 @@ Paula Simões: Data sources, requirements and testing.
 
 ************************************************************
 
-Ludwig Krippahl, 2011. 
-Public domain. All my copy rights shared.
+Ludwig Krippahl, 2011. All copy rights shared.
+
+Source code by Ludwig Krippahl is public domain.
+See SYNAPSE.txt for the Ararat Synapse copyright terms.
+
 
 ************************************************************
