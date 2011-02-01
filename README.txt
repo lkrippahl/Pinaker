@@ -4,7 +4,7 @@
 ******************                       *******************
 ************************************************************
 
-Version: 0.19 alfa
+Version: 0.19b
 
 This application reads jpg files with photos of barcodes and
 retrieves the book data from the Web. 
