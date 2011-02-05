@@ -12,6 +12,6 @@ clean:
 
 install:
 	cp pinaker $(DESTDIR)/usr/bin/pinaker
-	if ! test -d $(DESTDIR)/usr/share/pinaker; then mkdir $(DESTDIR)/usr/share/pinaker; fi
+	if ! test -d $(DESTDIR)/usr/share/pinaker; then mkdir -p $(DESTDIR)/usr/share/pinaker; fi
 	cp ./websource/*.pws $(DESTDIR)/usr/share/pinaker
 	cp ./htmlcodes.txt $(DESTDIR)/usr/share/pinaker 
