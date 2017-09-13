@@ -1,7 +1,7 @@
 Source: pinaker
 Section: x11
 Priority: extra
-Maintainer: Marcos Daniel Marado Torres <marado@isp.novis.pt>
+Maintainer: Marcos Daniel Marado Torres <mindboosternoori@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), docbook-to-man, lcl-units, lazarus-src, libxdamage1, fp-units-fcl, libxdmcp6, libxfixes3, fp-utils, libgtk2.0-dev, fp-units-gfx, libxcb-render-util0, locales, fp-units-base, libxi6, libpng12-0, fp-units-rtl, fp-compiler, libxcursor1, libpixman-1-0, lcl-gtk2, libxcb1, libc6-i686, fp-units-gtk2, libxrandr2, fp-units-misc, libxext6, libxcb-render0, libexpat1, libxau6, libxinerama1, libxcomposite1, pascal-synapse-dev
 Standards-Version: 3.8.4
 Homepage: http://centria.fct.unl.pt/~ludi/software.html
