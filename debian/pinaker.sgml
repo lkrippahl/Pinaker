@@ -24,7 +24,7 @@ manpage.1: manpage.sgml
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
-  <!ENTITY dhemail     "<email>marado@isp.novis.pt</email>">
+  <!ENTITY dhemail     "<email>mindboosternoori@gmail.com</email>">
   <!ENTITY dhusername  "Marcos Daniel Marado Torres">
   <!ENTITY dhucpackage "<refentrytitle>PINAKER</refentrytitle>">
   <!ENTITY dhpackage   "pinaker">
